@@ -1,5 +1,5 @@
 # Base image
-FROM lab/ubuntu:latest
+FROM lab/ubuntu:24.04
 
 # Maintainer information
 LABEL maintainer="andymllr <andrew.mueller1@gmail.com>"
@@ -17,15 +17,14 @@ RUN add-apt-repository multiverse && \
     echo steam steam/license note '' | sudo debconf-set-selections && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
-        python-pip \
+        python3-full \
         python3-pip \
-        python-ipykernel \
-        python3-ipykernel \
         steamcmd \
-        lib32gcc1 \
+        lib32gcc-s1 \
         libstdc++6 \
         libsdl2-2.0-0:i386 \
         libcurl4-openssl-dev:i386 && \
+    ln -sf /usr/games/steamcmd /usr/local/bin/steamcmd && \
     ls -la /usr/lib/*/libcurl.so* && \
     ln -sf /usr/lib/i386-linux-gnu/libcurl.so.4 /usr/lib/i386-linux-gnu/libcurl.so && \
     ln -sf /usr/lib/i386-linux-gnu/libcurl.so.4 /usr/lib/i386-linux-gnu/libcurl.so.3 && \
@@ -37,9 +36,8 @@ RUN add-apt-repository multiverse && \
         /tmp/*
 
 # Install botocore
-RUN wget https://bootstrap.pypa.io/get-pip.py -O /tmp/get-pip.py
-RUN python3 /tmp/get-pip.py
-RUN pip3 install botocore || /usr/local/bin/pip3 install botocore
+RUN echo $(which pip)
+# RUN pip install botocore
 
 # Mount /steamcmd (rust-server) volume
 RUN mkdir -p /steamcmd		
@@ -47,7 +45,7 @@ RUN touch /steamcmd/examplefile
 VOLUME ["/steamcmd"]
 
 # Install steamcmd and verify that it is working
-RUN curl -s http://media.steampowered.com/installer/steamcmd_linux.tar.gz \
-    | tar -v -C /steamcmd -zx && \
-    chmod +x /steamcmd/steamcmd.sh && \
-    /steamcmd/steamcmd.sh +login anonymous +quit
+RUN wget http://media.steampowered.com/installer/steamcmd_linux.tar.gz
+RUN tar -xf steamcmd_linux.tar.gz -C /steamcmd
+RUN chmod +x /steamcmd/steamcmd.sh
+# RUN /steamcmd/steamcmd.sh +login anonymous +quit

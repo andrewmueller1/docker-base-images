@@ -16,7 +16,7 @@ RUN apt-get update; \
 
 # Install and setup gosu
 # More information at https://github.com/tianon/gosu/blob/master/INSTALL.md
-ENV GOSU_VERSION 1.11
+ENV GOSU_VERSION 1.14
 RUN set -eux; \
     # save list of currently installed packages for later so we can clean up
 	savedAptMark="$(apt-mark showmanual)"; \
@@ -60,7 +60,8 @@ RUN apt-get update && \
         wget \
         curl \
         git \
-        sudo && \
+        sudo \
+        libarchive-tools && \
     apt-get upgrade -y && \
     apt-get dist-upgrade -y && \
     apt-get autoremove -y && \
@@ -75,13 +76,13 @@ RUN apt-get update && \
 # (also sets permissions for the /app volume)
 RUN groupadd \
         --system \
-        --gid 1000 \
+        --gid 1001 \
         docker && \
     useradd \
         --create-home \
         --home /app \
-        --uid 1000 \
-        --gid 1000 \
+        --uid 1001 \
+        --gid 1001 \
         --groups docker,users,staff \
         --shell /bin/false \
         docker && \
@@ -89,15 +90,15 @@ RUN groupadd \
 	chown -R docker:docker /app
 
 # Expose the /app volume
-#VOLUME [ "/app" ]
+VOLUME [ "/app" ]
 
 # Set default environment variables
 ENV LANGUAGE en_US.UTF-8
 ENV LANG en_US.utf8
 ENV TERM xterm
 ENV TZ Etc/UTC
-ENV PGID 1000
-ENV PUID 1000
+ENV PGID 1001
+ENV PUID 1001
 ENV CHOWN_DIRS "/app"
 ENV ENABLE_PASSWORDLESS_SUDO "false"
 
