@@ -48,4 +48,4 @@ VOLUME ["/steamcmd"]
 RUN wget http://media.steampowered.com/installer/steamcmd_linux.tar.gz
 RUN tar -xf steamcmd_linux.tar.gz -C /steamcmd
 RUN chmod +x /steamcmd/steamcmd.sh
-# RUN /steamcmd/steamcmd.sh +login anonymous +quit
+RUN /steamcmd/steamcmd.sh +login anonymous +quit

@@ -77,5 +77,5 @@ echo "
 "
 
 # Continue execution
-#exec gosu ${PUID}:${PGID} "$@"
-exec gosu docker "$@"
+exec gosu ${PUID}:${PGID} "$@"
+#exec gosu docker "$@"

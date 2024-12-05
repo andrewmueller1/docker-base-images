@@ -1,21 +1,20 @@
 # Base image
-FROM didstopia/base:steamcmd-ubuntu-20.04
+FROM lab/ubuntu-steamcmd:latest
 
 # Maintainer information
-LABEL maintainer="Didstopia <support@didstopia.com>"
+LABEL maintainer="andymllr <andrew.mueller1@gmail.com>"
 
 # Disable TTY interaction
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Default Node.js version
-ARG NODE_VERSION=14
+ARG NODE_VERSION=18
 
 # Install dependencies and verify that Node.js is working
-RUN curl -sL https://deb.nodesource.com/setup_$NODE_VERSION.x | bash - && \
-    apt-get update && \
+RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     nodejs \
-    python-dev \
+    npm \
     jq \
     build-essential && \
     node -v && npm -v && \
@@ -32,7 +31,7 @@ RUN npm install npm@latest -g
 RUN bash -c 'if [[ $(node -v) != v$NODE_VERSION* ]]; then echo "Incorrect Node.js version detected: $(node -v) (expected v${NODE_VERSION}.*)"; exit 1; fi'
 
 # Add Node.js initialization script
-ADD Scripts/nodejs_init.sh /nodejs_init.sh
+ADD nodejs_init.sh /
 RUN chmod +x /nodejs_init.sh
 
 # Run the Node.js initialization script as the default command
